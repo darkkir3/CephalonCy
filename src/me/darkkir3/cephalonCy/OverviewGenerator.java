@@ -9,10 +9,15 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 
+import me.darkkir3.status.StatusTypes;
 import me.darkkir3.utils.ConfigReader;
+import me.darkkir3.utils.DamageUtils;
 import me.darkkir3.weapons.ParsableWeapon;
 
 public class OverviewGenerator 
@@ -83,6 +88,44 @@ public class OverviewGenerator
         drawStatBars(weaponToDraw, image, g2d, currentPosY, statusValue, ConfigReader.readLangFile("STATUS"), false);
         currentPosY += 2 * (marginY + offsetY) + fontHeight + marginY;
         drawStatBars(weaponToDraw, image, g2d, currentPosY, sustainedValue, ConfigReader.readLangFile("SUSTAINED"), false);
+        
+        HashMap<StatusTypes, Float> baseDamages = weaponToDraw.calculateBaseDamageTable();
+        HashMap<StatusTypes, Float> procChances = DamageUtils.calculateStatusWeighting(baseDamages);
+        
+        ArrayList<Entry<StatusTypes, Float>> procChanceCopy = new ArrayList<Entry<StatusTypes, Float>>(procChances.entrySet());
+        procChanceCopy.sort((o1, o2)->o2.getValue().compareTo(o1.getValue()));
+        
+        g2d.setColor(Color.WHITE);
+        int posX = (image.getWidth() / 2) + 2 * marginX;
+        currentPosY = 2 * marginY + offsetY;
+        
+        int barWidth = image.getWidth() - (posX + 3 * marginX);
+        
+        float highestProcChance = procChanceCopy.get(0).getValue();
+        
+        for(Entry<StatusTypes, Float> entry : procChanceCopy)
+        {
+        	g2d.setColor(ConfigReader.getNightModeColor());
+        	g2d.fill3DRect(posX + marginX, currentPosY, barWidth, 16 + offsetY, true);
+        	g2d.setColor(Color.WHITE);
+        	g2d.fill3DRect(posX + marginX, currentPosY, (int)((float)barWidth * (entry.getValue() / highestProcChance)), 16 + offsetY, false);
+        	g2d.draw3DRect(posX + marginX, currentPosY, barWidth, 16 + offsetY, true);
+        	
+        	float damageValue = baseDamages.get(entry.getKey());
+        	g2d.setColor(Color.LIGHT_GRAY);
+        	
+        	BufferedImage icon = null;
+        	try 
+        	{
+        	    icon = ImageIO.read(new File("data" + File.separator + "icons" + File.separator + entry.getKey().name().toLowerCase() + ".png"));
+        	} 
+        	catch (IOException e) {
+        	}
+        	
+        	g2d.drawImage(icon, posX + 5 + marginX, currentPosY + 2, 16, 16, null);
+        	g2d.drawString(String.valueOf(Math.round(((Number)damageValue).floatValue() * 100.0) / 100.0) + " " + ConfigReader.readLangFile(entry.getKey().name().toUpperCase()), posX + marginX, currentPosY - offsetY);
+        	currentPosY += 4 * marginY + offsetY;
+        }
         
 		try 
 		{
