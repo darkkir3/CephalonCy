@@ -28,7 +28,7 @@ public class OverviewGenerator
 		BufferedImage image = new BufferedImage(ConfigReader.readConfigI("overviewWidth"), ConfigReader.readConfigI("overviewHeight"), ConfigReader.readConfigI("overviewImageType"));
 		
 		Graphics2D g2d = image.createGraphics();
-		g2d.setFont(new Font("SansSerif.plain", Font.PLAIN, 18));
+		g2d.setFont(new Font("SansSerif.plain", Font.PLAIN, 20));
 		
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -60,13 +60,29 @@ public class OverviewGenerator
         drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("status"), weaponToDraw.procChance * 100f, "%");
         currentPosY += fontHeight + 2 * offsetY;
         
-        currentPosY += fontHeight;
+        currentPosY += marginY;
         
-        drawStatBars(weaponToDraw, image, g2d, currentPosY, 2.4f, ConfigReader.readLangFile("CRITICAL"), true);        
-        currentPosY += (2 * marginY) + offsetY + fontHeight;
-        drawStatBars(weaponToDraw, image, g2d, currentPosY, 0.2f, ConfigReader.readLangFile("STATUS"), false);
-        currentPosY += (2 * marginY) + offsetY + fontHeight;
-        drawStatBars(weaponToDraw, image, g2d, currentPosY, -1.7f, ConfigReader.readLangFile("SUSTAINED"), false);
+        float criticalDev = ConfigReader.readConfigF("criticalStdDev");
+        float statusDev = ConfigReader.readConfigF("statusStdDev");
+        float sustainedDev = ConfigReader.readConfigF("sustainedStdDev");
+        
+        float criticalMean = ConfigReader.readConfigF("criticalMean");
+        float statusMean = ConfigReader.readConfigF("statusMean");
+        float sustainedMean = ConfigReader.readConfigF("sustainedMean");
+        
+        float criticalValue = (1f + (weaponToDraw.criticalMultiplier * weaponToDraw.criticalChance) - weaponToDraw.criticalChance);
+        float statusValue = weaponToDraw.procChance * weaponToDraw.fireRate;
+        float sustainedValue = (weaponToDraw.totalDamage * weaponToDraw.magazineSize) / (weaponToDraw.reloadTime + (weaponToDraw.magazineSize / weaponToDraw.fireRate));
+        
+        criticalValue = (criticalValue - criticalMean) / criticalDev;
+        statusValue = (statusValue - statusMean) / statusDev;
+        sustainedValue = (sustainedValue - sustainedMean) / sustainedDev;
+        
+        drawStatBars(weaponToDraw, image, g2d, currentPosY, criticalValue, ConfigReader.readLangFile("CRITICAL"), true);        
+        currentPosY += 2 * (marginY + offsetY) + fontHeight + marginY;
+        drawStatBars(weaponToDraw, image, g2d, currentPosY, statusValue, ConfigReader.readLangFile("STATUS"), false);
+        currentPosY += 2 * (marginY + offsetY) + fontHeight + marginY;
+        drawStatBars(weaponToDraw, image, g2d, currentPosY, sustainedValue, ConfigReader.readLangFile("SUSTAINED"), false);
         
 		try 
 		{
@@ -89,6 +105,12 @@ public class OverviewGenerator
         int posY = currentPosY;
         int width = image.getWidth() - (2 * marginX);
         int height = 2 * marginY;
+        
+        int fontHeight = g2d.getFontMetrics().getHeight();
+        
+        g2d.setColor(ConfigReader.getNightModeColor());
+        g2d.fill3DRect(posX, posY, width + 1, height + fontHeight + offsetY, false);
+        g2d.draw3DRect(posX, posY, width + 1, height + fontHeight + offsetY, true);
         
         g2d.setColor(Color.GRAY);
         g2d.fillRect(posX, posY, width, height);
@@ -115,8 +137,6 @@ public class OverviewGenerator
         {
         	g2d.draw3DRect(x, posY, marginX, height, true);
         }
-        
-        int fontHeight = g2d.getFontMetrics().getHeight();
         
         if(drawBarDescription)
         {
