@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import javax.security.auth.login.LoginException;
 
+import me.darkkir3.utils.WeaponParser;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.Compression;
@@ -13,7 +14,10 @@ public class CephalonCy
 {
 	public static void main(String[] args)
 	{
-		JDABuilder builder = new JDABuilder("NjEzMzg5NDYxMzEyNjM0ODk5.XVwQ7A.qQ1vYUAUj8B3_p6tK_br09PnAaA");
+		//initialize weapon library
+		WeaponParser.readWeapons();
+		
+		JDABuilder builder = new JDABuilder("NjEzMzg5NDYxMzEyNjM0ODk5.XVzyFg.PCcI3PsN9-yaE-r581BI8rPmrQc");
 	    
 	    // Disable parts of the cache
 	    builder.setDisabledCacheFlags(EnumSet.of(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE));
