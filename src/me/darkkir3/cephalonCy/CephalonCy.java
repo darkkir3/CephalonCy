@@ -17,7 +17,7 @@ public class CephalonCy
 		//initialize weapon library
 		WeaponParser.readWeapons();
 		
-		JDABuilder builder = new JDABuilder("NjEzMzg5NDYxMzEyNjM0ODk5.XV1m9Q.VcYodgPJE1XVPnpa99EeN97bKM4");
+		JDABuilder builder = new JDABuilder("NjEzMzg5NDYxMzEyNjM0ODk5.XV2jDQ.1yYi0wiZO0fg24HESKYEeUSODAE");
 	    
 	    // Disable parts of the cache
 	    builder.setDisabledCacheFlags(EnumSet.of(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE));
