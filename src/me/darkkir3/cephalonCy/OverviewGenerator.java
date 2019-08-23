@@ -202,11 +202,8 @@ public class OverviewGenerator
         g2d.draw3DRect(barStart, posY, Math.abs(endX - startX), height, false);
         g2d.setColor(Color.LIGHT_GRAY);
         
-        //0.3f to 0.6f
-        Color textColor = Color.getHSBColor(((valueToDraw + 1f) / 2f) * 0.3f + 0.3f, 1f, 0.75f);
         String textToDraw = (Math.round(((Number)value).floatValue() * 100.0) / 100.0) + " " + barName;
-        
-        g2d.setColor(textColor);
+        g2d.setColor(Color.LIGHT_GRAY);
         g2d.drawString(textToDraw, posX + (width / 2) - g2d.getFontMetrics().stringWidth(textToDraw) / 2, posY + height + fontHeight - offsetY);
 	}
 	
