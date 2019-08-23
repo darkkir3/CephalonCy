@@ -10,6 +10,7 @@ import java.util.Properties;
 public final class ConfigReader 
 {
 	private static Properties configToUse;
+	private static Properties langToUse;
 	
 	private ConfigReader() {}
 	
@@ -22,15 +23,37 @@ public final class ConfigReader
 				InputStream in = new FileInputStream("data" + File.separator + "config.properties");
 				ConfigReader.configToUse = new Properties();
 				configToUse.load(in);
+				in.close();
 			} 
 			catch (IOException e) 
 			{
-				System.err.println("Failed to read config file");
+				System.err.println("Failed to read config/lang file");
 				e.printStackTrace();
 			}
 		}
 		
 		return ConfigReader.configToUse;
+	}
+	
+	private static Properties getLangToUse()
+	{
+		if(ConfigReader.langToUse == null)
+		{
+			try 
+			{
+				InputStream in = new FileInputStream("data" + File.separator + "lang" + File.separator + readConfigS("defaultLang") + ".properties");
+				ConfigReader.langToUse = new Properties();
+				langToUse.load(in);
+				in.close();
+			} 
+			catch (IOException e) 
+			{
+				System.err.println("Failed to read lang file");
+				e.printStackTrace();
+			}
+		}
+		
+		return ConfigReader.langToUse;
 	}
 	
 	public static String readConfigS(String key)
@@ -59,7 +82,6 @@ public final class ConfigReader
 	 */
 	public static String readLangFile(String key)
 	{
-		//TODO: read string values from lang viles
-		return key;
+		return ConfigReader.getLangToUse().getProperty(key, key);
 	}
 }

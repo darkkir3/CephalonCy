@@ -52,17 +52,17 @@ public class OverviewGenerator
         /*accuracy does not matter for modding at the moment
         drawStatLine(g2d, marginX, currentPosY, image.getWidth(), ConfigReader.readLangFile("accuracy"), weaponToDraw.accuracy, "");
         currentPosY += fontHeight + offsetY;*/
-        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("critical_chance"), weaponToDraw.criticalChance * 100f, "%");
+        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("CRITICAL_CHANCE"), weaponToDraw.criticalChance * 100f, "%");
         currentPosY += fontHeight + 2 * offsetY;
-        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("critical_multiplier"), weaponToDraw.criticalMultiplier, "x");
+        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("CRITICAL_MULTIPLIER"), weaponToDraw.criticalMultiplier, "x");
         currentPosY += fontHeight + 2 * offsetY;
-        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("fire_rate"), weaponToDraw.fireRate, "");
+        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("FIRE_RATE"), weaponToDraw.fireRate, "");
         currentPosY += fontHeight + 2 * offsetY;
-        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("magazine"), weaponToDraw.magazineSize, "");
+        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("MAGAZINE"), weaponToDraw.magazineSize, "");
         currentPosY += fontHeight + 2 * offsetY;
-        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("reload"), weaponToDraw.reloadTime, "");
+        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("RELOAD"), weaponToDraw.reloadTime, "");
         currentPosY += fontHeight + 2 * offsetY;
-        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("status"), weaponToDraw.procChance * 100f, "%");
+        drawStatLine(g2d, marginX, currentPosY, (image.getWidth() - marginX) / 2, ConfigReader.readLangFile("STATUS"), weaponToDraw.procChance * 100f, "%");
         currentPosY += fontHeight + 2 * offsetY;
         
         currentPosY += marginY;
@@ -155,8 +155,8 @@ public class OverviewGenerator
         int fontHeight = g2d.getFontMetrics().getHeight();
         
         g2d.setColor(ConfigReader.getNightModeColor());
-        g2d.fill3DRect(posX, posY, width + 1, height + fontHeight + offsetY, false);
-        g2d.draw3DRect(posX, posY, width + 1, height + fontHeight + offsetY, true);
+        g2d.fill3DRect(posX, posY, width + 1, height + fontHeight, false);
+        g2d.draw3DRect(posX, posY, width + 1, height + fontHeight, true);
         
         g2d.setColor(Color.GRAY);
         g2d.fillRect(posX, posY, width, height);
@@ -201,7 +201,7 @@ public class OverviewGenerator
         g2d.setPaint(gradient);
         g2d.draw3DRect(barStart, posY, Math.abs(endX - startX), height, false);
         g2d.setColor(Color.LIGHT_GRAY);
-        g2d.drawString(barName, posX + (width / 2) - g2d.getFontMetrics().stringWidth(barName) / 2, posY + height + fontHeight);
+        g2d.drawString(barName, posX + (width / 2) - g2d.getFontMetrics().stringWidth(barName) / 2, posY + height + fontHeight - offsetY);
 	}
 	
 	private static void drawStatLine(Graphics2D g2d, int startX, int startY, int width, String valueName, Object value, String append)
