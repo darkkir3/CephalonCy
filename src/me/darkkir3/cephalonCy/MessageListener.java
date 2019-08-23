@@ -2,6 +2,7 @@ package me.darkkir3.cephalonCy;
 
 import java.io.File;
 
+import me.darkkir3.utils.ConfigReader;
 import me.darkkir3.utils.WeaponParser;
 import me.darkkir3.weapons.ParsableWeapon;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -36,10 +37,15 @@ public class MessageListener extends ListenerAdapter
 	    		EmbedBuilder builder = new EmbedBuilder();
 	    		builder.setTitle(weapon.name);
 	    		builder.setDescription(weapon.description);
-	    		builder.setThumbnail(weapon.getImageURL());	    		
-	    		builder.setImage("attachment://weapon.png");
-	    		
-	    		channel.sendFile(fileToSend, "weapon.png").embed(builder.build()).queue();
+	    		builder.setThumbnail(weapon.getImageURL());	
+	    		channel.sendMessage(builder.build()).submit();
+	    		channel.sendMessage(ConfigReader.readLangFile("PRIMARY_MODE")).addFile(fileToSend, "weapon.png").queue();
+	    		if(weapon.hasSecondaryStats())
+	    		{
+	    			ParsableWeapon secondaryWeapon = weapon.displaySecondaryStats();
+	    			channel.sendMessage((ConfigReader.readLangFile("SECONDARY_MODE")))
+	    			.addFile(OverviewGenerator.createOverview(secondaryWeapon), "weapon_secondary.png").queue();
+	    		}
     		}
     	}
     }
