@@ -144,8 +144,7 @@ public class OverviewGenerator
 
 	private static void drawStatBars(ParsableWeapon weapon, BufferedImage image, Graphics2D g2d, int currentPosY, float value, String barName, boolean drawBarDescription) 
 	{
-        
-        float valueToDraw = value / 3f;
+        float valueToDraw = Math.max(-3f, Math.min(3f, value)) / 3f;
         
         int posX = marginX;
         int posY = currentPosY;
