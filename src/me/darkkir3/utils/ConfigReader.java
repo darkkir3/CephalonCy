@@ -76,6 +76,11 @@ public final class ConfigReader
 		return Color.decode("#36393f");
 	}
 	
+	public static Color getEmbedColor()
+	{
+		return Color.decode("#34363c");
+	}
+	
 	/**Reads the current lang file
 	 * @param key
 	 * @return

@@ -25,9 +25,9 @@ public class OverviewGenerator
 	private static final int marginX = 10, marginY = 10;
 	private static final int offsetY = 5;
 	
-	public static File createOverview(ParsableWeapon weaponToDraw)
+	public static File createOverview(ParsableWeapon weaponToDraw, boolean isSecondary)
 	{
-		File fileToReturn = new File("generated" + File.separator + "overview" + File.separator + weaponToDraw.name + ".png");
+		File fileToReturn = new File("generated" + File.separator + "overview" + File.separator + weaponToDraw.name + (isSecondary ? "_secondary" : "_primary") + ".png");
 		new File("generated" + File.separator + "overview").mkdirs();
 		
 		BufferedImage image = new BufferedImage(ConfigReader.readConfigI("overviewWidth"), ConfigReader.readConfigI("overviewHeight"), ConfigReader.readConfigI("overviewImageType"));
@@ -41,7 +41,7 @@ public class OverviewGenerator
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		
-		g2d.setColor(ConfigReader.getNightModeColor());
+		g2d.setColor(ConfigReader.getEmbedColor());
 		g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
 
         int currentPosY = 2 * marginY;

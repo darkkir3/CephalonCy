@@ -31,7 +31,7 @@ public class MessageListener extends ListenerAdapter
     		
     		if(weapon != null)
     		{
-	    		File fileToSend = OverviewGenerator.createOverview(weapon);
+	    		File fileToSend = OverviewGenerator.createOverview(weapon, false);
 	    		MessageChannel channel = event.getChannel();
 	    		
 	    		EmbedBuilder builder = new EmbedBuilder();
@@ -39,12 +39,22 @@ public class MessageListener extends ListenerAdapter
 	    		builder.setDescription(weapon.description);
 	    		builder.setThumbnail(weapon.getImageURL());	
 	    		channel.sendMessage(builder.build()).submit();
-	    		channel.sendMessage(ConfigReader.readLangFile("PRIMARY_MODE")).addFile(fileToSend, "weapon.png").queue();
+	    		
+	    		builder = new EmbedBuilder();
+	    		builder.setTitle(ConfigReader.readLangFile("PRIMARY_MODE"));
+	    		builder.setImage("attachment://weapon_primary.png");
+	    		
+	    		channel.sendFile(fileToSend, "weapon_primary.png").embed(builder.build()).queue();
 	    		if(weapon.hasSecondaryStats())
 	    		{
 	    			ParsableWeapon secondaryWeapon = weapon.displaySecondaryStats();
-	    			channel.sendMessage((ConfigReader.readLangFile("SECONDARY_MODE")))
-	    			.addFile(OverviewGenerator.createOverview(secondaryWeapon), "weapon_secondary.png").queue();
+	    			
+	    			builder = new EmbedBuilder();
+		    		builder.setTitle(ConfigReader.readLangFile("SECONDARY_MODE"));
+		    		builder.setImage("attachment://weapon_secondary.png");
+	    			
+		    		channel.sendFile(OverviewGenerator.createOverview(secondaryWeapon, true), "weapon_secondary.png")
+		    		.embed(builder.build()).queue();
 	    		}
     		}
     	}
