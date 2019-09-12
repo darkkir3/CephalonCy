@@ -71,6 +71,11 @@ public final class ConfigReader
 		return Integer.valueOf(ConfigReader.readConfigS(key));
 	}
 	
+	public static Color readColor(String key)
+	{
+		return new Color(readConfigI(key));
+	}
+	
 	public static Color getNightModeColor()
 	{
 		return Color.decode("#36393f");

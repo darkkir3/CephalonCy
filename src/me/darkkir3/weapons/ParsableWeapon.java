@@ -30,6 +30,7 @@ public class ParsableWeapon
 	public String type;
 	//https://cdn.warframestat.us/img/${item.imageName}
 	public String imageName;
+	public Map<String, Object> damageTypes;
 	public Map<String, Object> secondary;
 	
 	public HashMap<StatusTypes, Float> calculateBaseDamageTable()
@@ -38,11 +39,23 @@ public class ParsableWeapon
 		
 		StatusTypes[] statusTypes = StatusTypes.values();
 		
-		for(int i = 0; i < damagePerShot.length; i++)
+		/*for(int i = 0; i < damagePerShot.length; i++)
 		{
 			if(damagePerShot[i] > 0)
 			{
 				damageTable.put(statusTypes[i], damagePerShot[i]);
+			}
+		}*/
+		
+		if(damageTypes != null)
+		{
+			for(StatusTypes statusType : statusTypes)
+			{
+				String statusName = statusType.name().toLowerCase();
+				if(damageTypes.containsKey(statusName))
+				{
+					damageTable.put(statusType, ((Number)damageTypes.get(statusName)).floatValue());
+				}
 			}
 		}
 		

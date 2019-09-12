@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import javax.security.auth.login.LoginException;
 
-import me.darkkir3.utils.WeaponParser;
+import me.darkkir3.utils.ObjectParser;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.Compression;
@@ -14,18 +14,13 @@ public class CephalonCy
 {
 	public static void main(String[] args)
 	{
-		//initialize weapon library
-		WeaponParser.readWeapons();
+		ObjectParser.initialize();
 		
-		JDABuilder builder = new JDABuilder("NjEzMzg5NDYxMzEyNjM0ODk5.XV2jDQ.1yYi0wiZO0fg24HESKYEeUSODAE");
+		JDABuilder builder = new JDABuilder("");
 	    
-	    // Disable parts of the cache
 	    builder.setDisabledCacheFlags(EnumSet.of(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE));
-	    // Enable the bulk delete event
 	    builder.setBulkDeleteSplittingEnabled(false);
-	    // Disable compression (not recommended)
 	    builder.setCompression(Compression.NONE);
-	    // Set activity (like "playing Something")
 	    builder.setActivity(Activity.watching("devstream"));
 	    
 	    builder.addEventListeners(new MessageListener());
