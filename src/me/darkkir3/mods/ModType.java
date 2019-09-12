@@ -17,7 +17,7 @@ public enum ModType
 	/**
 	 * rifle (and beam/bow) mods
 	 */
-	@SerializedName("Rifle")
+	@SerializedName(value = "Rifle", alternate = {"Primary"})
 	RIFLE(true),
 	/**
 	 * shotgun only mods

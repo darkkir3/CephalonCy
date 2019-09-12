@@ -51,11 +51,14 @@ public class ModOverviewCommand implements IBotCommand
 		{			
 			EmbedBuilder builder = new EmbedBuilder();
 			builder.setTitle(mod.name + " (" + mod.type.name().toLowerCase() + ")");
-			builder.setDescription(mod.description);
+			builder.setDescription(mod.getMaxRankDescription());
 			builder.setThumbnail(mod.getImageURL());	
-			builder.setColor(ConfigReader.readColor("infoColor"));
 			
 			String polarityName = mod.polarity.name().toLowerCase();
+			String rarity = mod.rarity.name().toLowerCase();
+			
+			builder.setColor(ConfigReader.readColor(rarity + "ModColor"));
+			
 			File polarityFile = new File("data" + File.separator + "icons" + File.separator + polarityName + "_pol.png");
 			builder.setAuthor(polarityName.substring(0, 1).toUpperCase() + polarityName.substring(1), null, "attachment://" + polarityName + "_pol.png");
 			MessageEmbed embed = builder.build();
