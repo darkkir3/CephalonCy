@@ -58,6 +58,8 @@ public class ModOverviewCommand implements IBotCommand
 			String rarity = mod.rarity.name().toLowerCase();
 			
 			builder.setColor(ConfigReader.readColor(rarity + "ModColor"));
+			builder.addField(ConfigReader.readLangFile("MOD_DRAIN"), String.valueOf(mod.baseDrain + mod.fusionLimit), true);
+			builder.addField(ConfigReader.readLangFile("MOD_RARITY"), rarity, true);
 			
 			File polarityFile = new File("data" + File.separator + "icons" + File.separator + polarityName + "_pol.png");
 			builder.setAuthor(polarityName.substring(0, 1).toUpperCase() + polarityName.substring(1), null, "attachment://" + polarityName + "_pol.png");
