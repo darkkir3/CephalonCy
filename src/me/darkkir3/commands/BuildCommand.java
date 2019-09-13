@@ -42,6 +42,7 @@ public class BuildCommand implements IBotCommand
 		
 		EmbedBuilder builder = new EmbedBuilder();
 		builder.setTitle(this.getUserFriendlyCommandName());
+		builder.setColor(ConfigReader.readDetailColor());
 		builder.setImage("attachment://" + fileToSend.getName());
 		channel.sendMessage(builder.build()).addFile(fileToSend).submit();
 		

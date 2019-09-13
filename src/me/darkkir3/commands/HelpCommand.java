@@ -42,11 +42,17 @@ public class HelpCommand implements IBotCommand
 		{
 			EmbedBuilder builder = new EmbedBuilder();
 			builder.setColor(ConfigReader.readInfoColor());
+			builder.addField(this.getCommandUsage(), this.getCommandDescription(), false);
 			
 			File informationFile = new File("data" + File.separator + "icons" + File.separator + "information.png");
 			for(Entry<String, IBotCommand> entry : botCommands.entrySet())
 			{
 				IBotCommand botCommand = entry.getValue();
+				if(botCommand == this)
+				{
+					//always display the help page as first entry
+					continue;
+				}
 				builder.addField(botCommand.getCommandUsage(), botCommand.getCommandDescription(), false);
 			}
 			

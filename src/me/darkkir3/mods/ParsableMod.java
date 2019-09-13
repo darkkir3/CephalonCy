@@ -1,7 +1,10 @@
 package me.darkkir3.mods;
 
+import java.awt.Color;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import me.darkkir3.utils.ConfigReader;
 
 public class ParsableMod 
 {
@@ -44,5 +47,12 @@ public class ParsableMod
 		 
 		
 		return maxRankDescription.toString();
+	}
+	
+	public Color getRarityColor()
+	{
+		String rarity = this.rarity.name().toLowerCase();
+		
+		return ConfigReader.readColor(rarity + "ModColor");
 	}
 }

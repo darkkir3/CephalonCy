@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import me.darkkir3.status.StatusTypes;
 import me.darkkir3.utils.ConfigReader;
 import me.darkkir3.utils.DamageUtils;
+import me.darkkir3.utils.ImageCache;
 import me.darkkir3.weapons.ParsableWeapon;
 
 public class WeaponOverviewGenerator 
@@ -116,13 +117,7 @@ public class WeaponOverviewGenerator
 	        	float damageValue = baseDamages.get(entry.getKey());
 	        	g2d.setColor(Color.LIGHT_GRAY);
 	        	
-	        	BufferedImage icon = null;
-	        	try 
-	        	{
-	        	    icon = ImageIO.read(new File("data" + File.separator + "icons" + File.separator + entry.getKey().name().toLowerCase() + ".png"));
-	        	} 
-	        	catch (IOException e) {
-	        	}
+	        	BufferedImage icon = ImageCache.getImageFromFile("data" + File.separator + "icons" + File.separator + entry.getKey().name().toLowerCase() + ".png");
 	        	
 	        	g2d.drawImage(icon, posX + 5 + marginX, currentPosY + 2, 16, 16, null);
 	        	g2d.drawString(String.valueOf(Math.round(((Number)damageValue).floatValue() * 100.0) / 100.0) + " " + ConfigReader.readLangFile(entry.getKey().name().toUpperCase()), posX + marginX, currentPosY - offsetY);
@@ -226,8 +221,6 @@ public class WeaponOverviewGenerator
     			new int[] {startX, width - marginX, width + marginX, startX + 2 * marginX}, 
     			new int[] {baseLineY, baseLineY, baseLineY + offsetY, baseLineY + offsetY}, 4);
     	g2d.setStroke(new BasicStroke(1f));
-    	//g2d.drawLine(startX, startY + g2d.getFontMetrics().getDescent(), width - marginX, startY + g2d.getFontMetrics().getDescent());
-    	//g2d.drawLine(startX + marginX, startY + g2d.getFontMetrics().getDescent() + 1, width, startY + g2d.getFontMetrics().getDescent() + 1);
     	
     }
 

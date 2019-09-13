@@ -57,7 +57,7 @@ public class ModOverviewCommand implements IBotCommand
 			String polarityName = mod.polarity.name().toLowerCase();
 			String rarity = mod.rarity.name().toLowerCase();
 			
-			builder.setColor(ConfigReader.readColor(rarity + "ModColor"));
+			builder.setColor(mod.getRarityColor());
 			builder.addField(ConfigReader.readLangFile("MOD_DRAIN"), String.valueOf(mod.baseDrain + mod.fusionLimit), true);
 			builder.addField(ConfigReader.readLangFile("MOD_RARITY"), rarity, true);
 			
