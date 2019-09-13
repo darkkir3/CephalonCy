@@ -1,4 +1,4 @@
-package me.darkkir3.cephalonCy;
+package me.darkkir3.commands;
 
 import java.io.File;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ public class MessageListener extends ListenerAdapter
 	{
 		this.registerBotCommand(new WeaponOverviewCommand());
 		this.registerBotCommand(new ModOverviewCommand());
+		this.registerBotCommand(new BuildCommand());
 		this.registerBotCommand(helpCommand);
 	}
 	
@@ -69,7 +70,7 @@ public class MessageListener extends ListenerAdapter
     				File exclamationFile = new File("data" + File.separator + "icons" + File.separator +  "exclamation.png");
     				builder.setAuthor(commandUsage, null, "attachment://exclamation.png");
     				builder.setTitle(botCommandToUse.getUserFriendlyCommandName());
-    				builder.setColor(ConfigReader.readColor("warningColor"));
+    				builder.setColor(ConfigReader.readWarningColor());
     				
     				MessageEmbed embed = builder.build();
     				event.getChannel().sendMessage(embed).addFile(exclamationFile).queue();

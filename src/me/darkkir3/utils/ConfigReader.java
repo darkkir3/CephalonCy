@@ -76,6 +76,21 @@ public final class ConfigReader
 		return new Color(readConfigI(key));
 	}
 	
+	public static Color readInfoColor()
+	{
+		return readColor("infoColor");
+	}
+	
+	public static Color readWarningColor()
+	{
+		return readColor("warningColor");
+	}
+	
+	public static Color readDetailColor()
+	{
+		return readColor("detailColor");
+	}
+	
 	public static Color getNightModeColor()
 	{
 		return Color.decode("#36393f");

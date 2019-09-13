@@ -1,4 +1,4 @@
-package me.darkkir3.cephalonCy;
+package me.darkkir3.commands;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 

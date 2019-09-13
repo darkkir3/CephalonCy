@@ -20,7 +20,7 @@ import me.darkkir3.utils.ConfigReader;
 import me.darkkir3.utils.DamageUtils;
 import me.darkkir3.weapons.ParsableWeapon;
 
-public class OverviewGenerator 
+public class WeaponOverviewGenerator 
 {
 	private static final int marginX = 10, marginY = 10;
 	private static final int offsetY = 5;

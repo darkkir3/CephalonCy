@@ -1,7 +1,8 @@
-package me.darkkir3.cephalonCy;
+package me.darkkir3.commands;
 
 import java.io.File;
 
+import me.darkkir3.cephalonCy.WeaponOverviewGenerator;
 import me.darkkir3.utils.ConfigReader;
 import me.darkkir3.utils.ObjectParser;
 import me.darkkir3.weapons.ParsableWeapon;
@@ -49,14 +50,14 @@ public class WeaponOverviewCommand implements IBotCommand
 		
 		if(weapon != null)
 		{
-			File fileToSend = OverviewGenerator.createOverview(weapon, false);
+			File fileToSend = WeaponOverviewGenerator.createOverview(weapon, false);
 			MessageChannel channel = event.getChannel();
 			
 			EmbedBuilder builder = new EmbedBuilder();
 			builder.setTitle(weapon.name);
 			builder.setDescription(weapon.description);
 			builder.setThumbnail(weapon.getImageURL());	
-			builder.setColor(ConfigReader.readColor("infoColor"));
+			builder.setColor(ConfigReader.readInfoColor());
 			channel.sendMessage(builder.build()).submit();
 			
 			builder = new EmbedBuilder();
@@ -74,7 +75,7 @@ public class WeaponOverviewCommand implements IBotCommand
 				builder.setImage("attachment://weapon_secondary.png");
 				builder.setColor(ConfigReader.readColor("detailColor"));
 				
-				channel.sendFile(OverviewGenerator.createOverview(secondaryWeapon, true), "weapon_secondary.png")
+				channel.sendFile(WeaponOverviewGenerator.createOverview(secondaryWeapon, true), "weapon_secondary.png")
 				.embed(builder.build()).queue();
 			}
 		}

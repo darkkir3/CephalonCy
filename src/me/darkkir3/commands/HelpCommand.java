@@ -1,5 +1,6 @@
-package me.darkkir3.cephalonCy;
+package me.darkkir3.commands;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -40,15 +41,17 @@ public class HelpCommand implements IBotCommand
 		if(botCommands != null)
 		{
 			EmbedBuilder builder = new EmbedBuilder();
-			builder.setTitle(this.getUserFriendlyCommandName());
-			builder.setColor(ConfigReader.readColor("infoColor"));
+			builder.setColor(ConfigReader.readInfoColor());
+			
+			File informationFile = new File("data" + File.separator + "icons" + File.separator + "information.png");
 			for(Entry<String, IBotCommand> entry : botCommands.entrySet())
 			{
 				IBotCommand botCommand = entry.getValue();
-				builder.addField(botCommand.getCommandUsage(), botCommand.getCommandDescription(), true);
+				builder.addField(botCommand.getCommandUsage(), botCommand.getCommandDescription(), false);
 			}
 			
-			event.getChannel().sendMessage(builder.build()).queue();
+			builder.setAuthor(this.getUserFriendlyCommandName(), null, "attachment://information.png");
+			event.getChannel().sendMessage(builder.build()).addFile(informationFile).queue();
 		}
 		
 		return true;
