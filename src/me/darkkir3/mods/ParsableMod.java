@@ -1,5 +1,8 @@
 package me.darkkir3.mods;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ParsableMod 
 {
 	public String uniqueName;
@@ -15,5 +18,31 @@ public class ParsableMod
 	public String getImageURL()
 	{
 		return "https://cdn.warframestat.us/img/" + imageName;
+	}
+	
+	public String getMaxRankDescription()
+	{
+		StringBuilder maxRankDescription = new StringBuilder(this.description);
+		
+		float maxRankMultiplier = fusionLimit + 1;
+		    
+		//extract all decimals
+		Pattern pattern = Pattern.compile("(\\d+(?:\\.\\d+)?)");
+		Matcher matcher = pattern.matcher(maxRankDescription);
+		
+		int end = 0;
+		while (matcher.find(end)) 
+		{
+			String match = matcher.group();
+			double numberFound = Double.valueOf(match);
+		    numberFound *= maxRankMultiplier;
+		    int i = (int) numberFound;
+		    
+		    maxRankDescription = maxRankDescription.replace(matcher.start(), matcher.end(), numberFound == i ? String.valueOf(i) : String.valueOf(numberFound));
+		    end = matcher.end() + 1;
+		 }
+		 
+		
+		return maxRankDescription.toString();
 	}
 }
