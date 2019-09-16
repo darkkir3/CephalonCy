@@ -55,4 +55,67 @@ public class ParsableMod
 		
 		return ConfigReader.readColor(rarity + "ModColor");
 	}
+	
+	private String getCriticalChanceKey()
+	{
+		return "mod." + this.uniqueName + ".criticalChance";
+	}
+	
+	private String getCriticalDamageKey()
+	{
+		return "mod." + this.uniqueName + ".criticalDamage";
+	}
+	
+	private String getBaseDamageKey()
+	{
+		return "mod." + this.uniqueName + ".baseDamage";
+	}
+	
+	private String getMultishotKey()
+	{
+		return "mod." + this.uniqueName + ".multishot";
+	}
+	
+	private String getStatusChanceKey()
+	{
+		return "mod." + this.uniqueName + ".statusChance";
+	}
+	
+	private String getFireRateKey()
+	{
+		return "mod." + this.uniqueName + ".fireRate";
+	}
+	
+	public float getCriticalChance()
+	{
+		return ConfigReader.readConfigF(this.getCriticalChanceKey());
+	}
+	
+	public float getCriticalDamage()
+	{
+		return ConfigReader.readConfigF(this.getCriticalDamageKey());
+	}
+	
+	public float getBaseDamage()
+	{
+		return ConfigReader.readConfigF(this.getBaseDamageKey());
+	}
+	
+	public float getMultishot()
+	{
+		return ConfigReader.readConfigF(this.getMultishotKey());
+	}
+	
+	public float getStatusChance()
+	{
+		return ConfigReader.readConfigF(this.getStatusChanceKey());
+	}
+	
+	public float getFireRate()
+	{
+		return ConfigReader.readConfigF(this.getFireRateKey());
+	}
+	
+	
 }
+

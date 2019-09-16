@@ -7,13 +7,13 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 import me.darkkir3.mods.ParsableMod;
 import me.darkkir3.utils.ConfigReader;
 import me.darkkir3.utils.ImageCache;
-import me.darkkir3.utils.ObjectParser;
 
 public class BuildOverviewGenerator 
 {
@@ -21,7 +21,7 @@ public class BuildOverviewGenerator
 	private static Font plainFont = new Font("SansSerif", Font.PLAIN, 20);
 	private static Font boldFont = new Font("SansSerif", Font.BOLD, 20);
 	
-	public static File createOverview()
+	public static File createOverview(ArrayList<ParsableMod> modsToDisplay)
 	{
 		//use temporary files for builds
 		File fileToReturn = null;
@@ -60,26 +60,15 @@ public class BuildOverviewGenerator
         int startX = 0;
         int startY = 0;
         
-        String[] modsToDisplay = new String[] {
-        		"Serration", 
-        		"Split chamber", 
-        		"Point strike", 
-        		"Vital sense", 
-        		"Vigilante armaments", 
-        		"Malignant force",
-        		"High Voltage",
-        		"Primed Shred"};
-        
         for(int i = 0; i < 8; i++)
         {
-        	ParsableMod modToDisplay = ObjectParser.fetchMod(modsToDisplay[i]);
         	if(i > 0 && i % 4 == 0)
         	{
         		startY += cardOffsetY;
         		startX = 0;
         	}
         	
-        	drawModCard(modToDisplay, g2d, startX, startY, cardWidth, cardHeight);
+        	drawModCard((modsToDisplay.size() - 1) >= i ? modsToDisplay.get(i) : null, g2d, startX, startY, cardWidth, cardHeight);
         	startX += cardOffsetX;
         }
         
@@ -113,6 +102,11 @@ public class BuildOverviewGenerator
 	private static void drawModCard(ParsableMod mod, Graphics2D g2d, int posX, int posY, int cardWidth, int cardHeight)
 	{
 		drawEmptyModCard(g2d, posX, posY, cardWidth, cardHeight);
+		
+		if(mod == null)
+		{
+			return;
+		}
 		
 		g2d.setFont(boldFont);
 		

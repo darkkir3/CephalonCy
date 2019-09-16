@@ -3,8 +3,10 @@ package me.darkkir3.utils;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 
 public final class ConfigReader 
@@ -71,6 +73,23 @@ public final class ConfigReader
 		return Integer.valueOf(ConfigReader.readConfigS(key));
 	}
 	
+	public static void setConfig(String key, String value)
+	{
+		ConfigReader.configToUse.setProperty(key, value);
+		
+		OutputStream out;
+		try 
+		{
+			out = new FileOutputStream("data" + File.separator + "config.properties");
+			ConfigReader.configToUse.store(out, "");
+			out.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public static Color readColor(String key)
 	{
 		return new Color(readConfigI(key));
@@ -107,6 +126,7 @@ public final class ConfigReader
 	 */
 	public static String readLangFile(String key)
 	{
-		return ConfigReader.getLangToUse().getProperty(key, key);
+		return ConfigReader.getLangToUse().getProperty(key, key)
+				.replace("%commandPrefix%", ConfigReader.readConfigS("commandPrefix"));
 	}
 }
