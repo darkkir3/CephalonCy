@@ -114,6 +114,18 @@ public class ModOverviewCommand implements IBotCommand
 			case "sc":
 				mod.setStatusChance(valueToSet);
 				break;
+			case "impact":
+				mod.setImpact(valueToSet);
+				break;
+			case "puncture":
+				mod.setPuncture(valueToSet);
+				break;
+			case "slash":
+				mod.setSlash(valueToSet);
+				break;
+			case "pt":
+				mod.setPunchThrough(valueToSet);
+				break;
 			case "toxin":
 				mod.setToxin(valueToSet);
 				break;
@@ -185,6 +197,22 @@ public class ModOverviewCommand implements IBotCommand
 				if(mod.getStatusChance() != 0f)
 				{
 					valuesSet.append("sc **" + WeaponOverviewGenerator.formatValueToDraw(mod.getStatusChance() * 100f) + "**\n");
+				}
+				if(mod.getImpact() != 0f)
+				{
+					valuesSet.append("impact **" + WeaponOverviewGenerator.formatValueToDraw(mod.getImpact() * 100f) + "**\n");
+				}
+				if(mod.getPuncture() != 0f)
+				{
+					valuesSet.append("puncture **" + WeaponOverviewGenerator.formatValueToDraw(mod.getPuncture() * 100f) + "**\n");
+				}
+				if(mod.getSlash() != 0f)
+				{
+					valuesSet.append("slash **" + WeaponOverviewGenerator.formatValueToDraw(mod.getSlash() * 100f) + "**\n");
+				}
+				if(mod.getPunchThrough() != 0f)
+				{
+					valuesSet.append("pt **" + WeaponOverviewGenerator.formatValueToDraw(mod.getPunchThrough() * 100f) + "**\n");
 				}
 				if(mod.getToxin() != 0f)
 				{

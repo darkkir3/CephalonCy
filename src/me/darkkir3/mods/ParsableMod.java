@@ -116,6 +116,26 @@ public class ParsableMod
 		return "mod." + this.uniqueName + ".reload";
 	}
 	
+	public String getImpactKey()
+	{
+		return "mod." + this.uniqueName + ".impact";
+	}
+	
+	public String getPunctureKey()
+	{
+		return "mod." + this.uniqueName + ".puncture";
+	}
+	
+	public String getSlashKey()
+	{
+		return "mod." + this.uniqueName + ".slash";
+	}
+	
+	public String getPunchThroughKey()
+	{
+		return "mod." + this.uniqueName + ".punchThrough";
+	}
+	
 	public float getCriticalChance()
 	{
 		return ConfigReader.readConfigF(this.getCriticalChanceKey());
@@ -176,6 +196,26 @@ public class ParsableMod
 		return ConfigReader.readConfigF(this.getReloadKey());
 	}
 	
+	public float getImpact()
+	{
+		return ConfigReader.readConfigF(this.getImpactKey());
+	}
+	
+	public float getPuncture()
+	{
+		return ConfigReader.readConfigF(this.getPunctureKey());
+	}
+	
+	public float getSlash()
+	{
+		return ConfigReader.readConfigF(this.getSlashKey());
+	}
+	
+	public float getPunchThrough()
+	{
+		return ConfigReader.readConfigF(this.getPunchThroughKey());
+	}
+	
 	public void setCriticalChance(float value)
 	{
 		ConfigReader.setConfig(this.getCriticalChanceKey(), String.valueOf(value));
@@ -204,6 +244,26 @@ public class ParsableMod
 	public void setFireRate(float value)
 	{
 		ConfigReader.setConfig(this.getFireRateKey(), String.valueOf(value));
+	}
+	
+	public void setImpact(float value)
+	{
+		ConfigReader.setConfig(this.getImpactKey(), String.valueOf(value));
+	}
+	
+	public void setPuncture(float value)
+	{
+		ConfigReader.setConfig(this.getPunctureKey(), String.valueOf(value));
+	}
+	
+	public void setSlash(float value)
+	{
+		ConfigReader.setConfig(this.getSlashKey(), String.valueOf(value));
+	}
+	
+	public void setPunchThrough(float value)
+	{
+		ConfigReader.setConfig(this.getPunchThroughKey(), String.valueOf(value));
 	}
 	
 	public void setElectricity(float value)
