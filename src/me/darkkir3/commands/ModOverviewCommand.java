@@ -2,6 +2,7 @@ package me.darkkir3.commands;
 
 import java.io.File;
 
+import me.darkkir3.cephalonCy.WeaponOverviewGenerator;
 import me.darkkir3.mods.ParsableMod;
 import me.darkkir3.utils.ConfigReader;
 import me.darkkir3.utils.MessageUtils;
@@ -81,6 +82,12 @@ public class ModOverviewCommand implements IBotCommand
 						null);
 			}
 			
+			//percentage value to multiplier
+			if(valueToSet != 0f)
+			{
+				valueToSet /= 100f;
+			}
+			
 			switch(stat)
 			{
 			case "dmg":
@@ -120,8 +127,11 @@ public class ModOverviewCommand implements IBotCommand
 				mod.setHeat(valueToSet);
 				break;
 			default:
+				event.getMessage().addReaction(ConfigReader.readConfigS("crossMark")).queue();
 				return false;
 			}
+			
+			event.getMessage().addReaction(ConfigReader.readConfigS("checkMark")).queue();
 			
 			//display mod overview after setting a value
 			this.handleCommand(listener, event, mod.name);
@@ -146,51 +156,51 @@ public class ModOverviewCommand implements IBotCommand
 				StringBuilder valuesSet = new StringBuilder();
 				if(mod.getBaseDamage() != 0f)
 				{
-					valuesSet.append("dmg **" + mod.getBaseDamage() + "**\n");
+					valuesSet.append("dmg **" + WeaponOverviewGenerator.formatValueToDraw(mod.getBaseDamage() * 100f) + "**\n");
 				}
 				if(mod.getMultishot() != 0f)
 				{
-					valuesSet.append("multi **" + mod.getMultishot() + "**\n");
+					valuesSet.append("multi **" + WeaponOverviewGenerator.formatValueToDraw(mod.getMultishot() * 100f) + "**\n");
 				}
 				if(mod.getCriticalChance() != 0f)
 				{
-					valuesSet.append("cc **" + mod.getCriticalChance() + "**\n");
+					valuesSet.append("cc **" + WeaponOverviewGenerator.formatValueToDraw(mod.getCriticalChance() * 100f) + "**\n");
 				}
 				if(mod.getCriticalDamage() != 0f)
 				{
-					valuesSet.append("cd **" + mod.getCriticalDamage() + "**\n");
+					valuesSet.append("cd **" + WeaponOverviewGenerator.formatValueToDraw(mod.getCriticalDamage() * 100f) + "**\n");
 				}
 				if(mod.getFireRate() != 0f)
 				{
-					valuesSet.append("fr **" + mod.getFireRate() + "**\n");
+					valuesSet.append("fr **" + WeaponOverviewGenerator.formatValueToDraw(mod.getFireRate() * 100f) + "**\n");
 				}
 				if(mod.getMagazine() != 0f)
 				{
-					valuesSet.append("mag **" + mod.getMagazine() + "**\n");
+					valuesSet.append("mag **" + WeaponOverviewGenerator.formatValueToDraw(mod.getMagazine() * 100f) + "**\n");
 				}
 				if(mod.getReload() != 0f)
 				{
-					valuesSet.append("reload **" + mod.getReload() + "**\n");
+					valuesSet.append("reload **" + WeaponOverviewGenerator.formatValueToDraw(mod.getReload() * 100f) + "**\n");
 				}
 				if(mod.getStatusChance() != 0f)
 				{
-					valuesSet.append("sc **" + mod.getStatusChance() + "**\n");
+					valuesSet.append("sc **" + WeaponOverviewGenerator.formatValueToDraw(mod.getStatusChance() * 100f) + "**\n");
 				}
 				if(mod.getToxin() != 0f)
 				{
-					valuesSet.append("toxin **" + mod.getToxin() + "**\n");
+					valuesSet.append("toxin **" + WeaponOverviewGenerator.formatValueToDraw(mod.getToxin() * 100f) + "**\n");
 				}
 				if(mod.getElectricity() != 0f)
 				{
-					valuesSet.append("elec **" + mod.getElectricity() + "**\n");
+					valuesSet.append("elec **" + WeaponOverviewGenerator.formatValueToDraw(mod.getElectricity() * 100f) + "**\n");
 				}
 				if(mod.getCold() != 0f)
 				{
-					valuesSet.append("cold **" + mod.getCold() + "**\n");
+					valuesSet.append("cold **" + WeaponOverviewGenerator.formatValueToDraw(mod.getCold() * 100f) + "**\n");
 				}
 				if(mod.getHeat() != 0f)
 				{
-					valuesSet.append("heat **" + mod.getHeat() + "**\n");
+					valuesSet.append("heat **" + WeaponOverviewGenerator.formatValueToDraw(mod.getHeat() * 100f) + "**\n");
 				}
 				
 				boolean modConfigured = valuesSet.length() > 0;
@@ -205,13 +215,7 @@ public class ModOverviewCommand implements IBotCommand
 				File polarityFile = new File("data" + File.separator + "icons" + File.separator + polarityName + "_pol.png");
 				builder.setAuthor(polarityName.substring(0, 1).toUpperCase() + polarityName.substring(1), null, "attachment://" + polarityName + "_pol.png");
 				MessageEmbed embed = builder.build();
-				channel.sendMessage(embed).addFile(polarityFile).queue(t -> 
-				{
-					if(modConfigured)
-					{
-						t.addReaction(ConfigReader.readConfigS("checkMark")).queue();
-					}
-				});
+				channel.sendMessage(embed).addFile(polarityFile).queue();
 			}
 		}
 		

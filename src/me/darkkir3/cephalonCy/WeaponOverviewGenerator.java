@@ -224,7 +224,7 @@ public class WeaponOverviewGenerator
     	
     }
 
-	private static String formatValueToDraw(Object value) 
+	public static String formatValueToDraw(Object value) 
 	{
 		String valueToDraw = null;
     	if(value instanceof String || value instanceof Integer)
