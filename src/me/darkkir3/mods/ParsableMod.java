@@ -86,6 +86,36 @@ public class ParsableMod
 		return "mod." + this.uniqueName + ".fireRate";
 	}
 	
+	public String getElectricityKey()
+	{
+		return "mod." + this.uniqueName + ".electricity";
+	}
+	
+	public String getToxinKey()
+	{
+		return "mod." + this.uniqueName + ".toxin";
+	}
+	
+	public String getColdKey()
+	{
+		return "mod." + this.uniqueName + ".cold";
+	}
+	
+	public String getHeatKey()
+	{
+		return "mod." + this.uniqueName + ".heat";
+	}
+	
+	public String getMagazineKey()
+	{
+		return "mod." + this.uniqueName + ".magazine";
+	}
+	
+	public String getReloadKey()
+	{
+		return "mod." + this.uniqueName + ".reload";
+	}
+	
 	public float getCriticalChance()
 	{
 		return ConfigReader.readConfigF(this.getCriticalChanceKey());
@@ -116,6 +146,94 @@ public class ParsableMod
 		return ConfigReader.readConfigF(this.getFireRateKey());
 	}
 	
+	public float getElectricity()
+	{
+		return ConfigReader.readConfigF(this.getElectricityKey());
+	}
 	
+	public float getToxin()
+	{
+		return ConfigReader.readConfigF(this.getToxinKey());
+	}
+	
+	public float getCold()
+	{
+		return ConfigReader.readConfigF(this.getColdKey());
+	}
+	
+	public float getHeat()
+	{
+		return ConfigReader.readConfigF(this.getHeatKey());
+	}
+	
+	public float getMagazine()
+	{
+		return ConfigReader.readConfigF(this.getMagazineKey());
+	}
+	
+	public float getReload()
+	{
+		return ConfigReader.readConfigF(this.getReloadKey());
+	}
+	
+	public void setCriticalChance(float value)
+	{
+		ConfigReader.setConfig(this.getCriticalChanceKey(), String.valueOf(value));
+	}
+	
+	public void setCriticalDamage(float value)
+	{
+		ConfigReader.setConfig(this.getCriticalDamageKey(), String.valueOf(value));
+	}
+	
+	public void setBaseDamage(float value)
+	{
+		ConfigReader.setConfig(this.getBaseDamageKey(), String.valueOf(value));
+	}
+	
+	public void setMultishot(float value)
+	{
+		ConfigReader.setConfig(this.getMultishotKey(), String.valueOf(value));
+	}
+	
+	public void setStatusChance(float value)
+	{
+		ConfigReader.setConfig(this.getStatusChanceKey(), String.valueOf(value));
+	}
+	
+	public void setFireRate(float value)
+	{
+		ConfigReader.setConfig(this.getFireRateKey(), String.valueOf(value));
+	}
+	
+	public void setElectricity(float value)
+	{
+		ConfigReader.setConfig(this.getElectricityKey(), String.valueOf(value));
+	}
+	
+	public void setToxin(float value)
+	{
+		ConfigReader.setConfig(this.getToxinKey(), String.valueOf(value));
+	}
+	
+	public void setCold(float value)
+	{
+		ConfigReader.setConfig(this.getColdKey(), String.valueOf(value));
+	}
+	
+	public void setHeat(float value)
+	{
+		ConfigReader.setConfig(this.getHeatKey(), String.valueOf(value));
+	}
+	
+	public void setMagazine(float value)
+	{
+		ConfigReader.setConfig(this.getMagazineKey(), String.valueOf(value));
+	}
+	
+	public void setReload(float value)
+	{
+		ConfigReader.setConfig(this.getReloadKey(), String.valueOf(value));
+	}
 }
 

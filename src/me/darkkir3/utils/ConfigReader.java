@@ -65,17 +65,20 @@ public final class ConfigReader
 	
 	public static float readConfigF(String key)
 	{
-		return Float.valueOf(ConfigReader.readConfigS(key));
+		String value = ConfigReader.readConfigS(key);
+		return Float.valueOf(value == null ? "0" : value);
 	}
 	
 	public static int readConfigI(String key)
 	{
-		return Integer.valueOf(ConfigReader.readConfigS(key));
+		String value = ConfigReader.readConfigS(key);
+		return Integer.valueOf(value == null ? "0" : value);
 	}
 	
 	public static void setConfig(String key, String value)
 	{
 		ConfigReader.configToUse.setProperty(key, value);
+		System.out.println("Setting config: " + key + " | " + value);
 		
 		OutputStream out;
 		try 

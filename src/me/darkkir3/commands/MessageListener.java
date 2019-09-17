@@ -1,11 +1,9 @@
 package me.darkkir3.commands;
 
-import java.io.File;
 import java.util.HashMap;
 
 import me.darkkir3.utils.ConfigReader;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
+import me.darkkir3.utils.MessageUtils;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -60,20 +58,10 @@ public class MessageListener extends ListenerAdapter
     			IBotCommand botCommandToUse = botCommands.get(commandToUse);
     			if(!botCommandToUse.handleCommand(this, event, splitParams.length > 1 ? splitParams[1] : null))
     			{
-    				//send error message
-    				String commandUsage = botCommandToUse.getCommandUsage();
-    				String commandDescription = botCommandToUse.getCommandDescription();
-    				
-    				EmbedBuilder builder = new EmbedBuilder();
-    				builder.setDescription(commandDescription);
-    				
-    				File exclamationFile = new File("data" + File.separator + "icons" + File.separator +  "exclamation.png");
-    				builder.setAuthor(commandUsage, null, "attachment://exclamation.png");
-    				builder.setTitle(botCommandToUse.getUserFriendlyCommandName());
-    				builder.setColor(ConfigReader.readWarningColor());
-    				
-    				MessageEmbed embed = builder.build();
-    				event.getChannel().sendMessage(embed).addFile(exclamationFile).queue();
+    				MessageUtils.sendErrorMessage(event.getChannel(), 
+    						botCommandToUse.getCommandUsage(), 
+    						botCommandToUse.getUserFriendlyCommandName(), 
+    						botCommandToUse.getCommandDescription());
     			}
     		}
     		else
