@@ -1,8 +1,10 @@
 package me.darkkir3.weapons;
 
 import java.util.HashMap;
+import java.util.List;
 
 import me.darkkir3.cephalonCy.Enemy;
+import me.darkkir3.mods.ParsableMod;
 import me.darkkir3.status.StatusTypes;
 
 public abstract class BaseWeapon 
@@ -75,6 +77,77 @@ public abstract class BaseWeapon
 	 * the modded multishot modifier as it appears in the modding stats (1f = fires base bullets)
 	 */
 	protected float multishotModifier = 1f;
+	
+	public void applyMods(List<ParsableMod> mods)
+	{
+		//max mod capacity equals 8
+		if(mods.size() > 8)
+		{
+			return;
+		}
+		
+		float critChanceModifier = 0f;
+		float critDamageModifier = 0f;
+		float baseDamageModifier = 0f;
+		float moddedMultishotModifier = 0f;
+		float statusChanceModifier = 0f;
+		float fireRateModifier = 0f;
+		float electricityModifier = 0f;
+		float toxinModifier = 0f;
+		float coldModifier = 0f;
+		float heatModifier = 0f;
+		float magazineModifier = 0f;
+		float reloadModifier = 0f;
+		float impactModifier = 0f;
+		float punctureModifier = 0f;
+		float slashModifier = 0f;
+		float punchthroughModifier = 0f;
+		
+		for(ParsableMod mod : mods)
+		{
+			if(mod == null)
+			{
+				continue;
+			}
+			
+			critChanceModifier += mod.getCriticalChance();
+			critDamageModifier += mod.getCriticalDamage();
+			baseDamageModifier += mod.getBaseDamage();
+			moddedMultishotModifier += mod.getMultishot();
+			statusChanceModifier += mod.getStatusChance();
+			fireRateModifier += mod.getFireRate();
+			electricityModifier += mod.getElectricity();
+			toxinModifier += mod.getToxin();
+			coldModifier += mod.getCold();
+			heatModifier += mod.getHeat();
+			magazineModifier += mod.getMagazine();
+			reloadModifier += mod.getReload();
+			impactModifier += mod.getImpact();
+			slashModifier += mod.getSlash();
+			punchthroughModifier += mod.getPunchThrough();
+		}
+		
+		this.criticalRate *= (1f + critChanceModifier);
+		this.criticalDamage *= (1f + critDamageModifier);
+		//TODO: implement base damage modifiers
+		this.multishotModifier += moddedMultishotModifier;
+		this.statusChance *= (1f + statusChanceModifier);
+		//TODO: fire rate doesn't scale linearly
+		this.fireRate *= (1f + fireRateModifier);
+		//TODO: apply elementals
+		//elec
+		//toxin
+		//cold
+		//heat
+		this.magazine *= (1f + magazineModifier);
+		this.reloadSpeed *= (1f / (1f + reloadModifier));
+		//TODO: apply ips
+		//impact
+		//puncture
+		//slash
+		//TODO: add punch through as field
+		//punch through
+	}
 	
 	public abstract void resetWeaponState();
 	public abstract void updateWeaponState(Enemy enemy, float currentTime);

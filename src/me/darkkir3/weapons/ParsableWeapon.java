@@ -2,11 +2,13 @@ package me.darkkir3.weapons;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import me.darkkir3.mods.ParsableMod;
 import me.darkkir3.status.StatusTypes;
 
 public class ParsableWeapon 
