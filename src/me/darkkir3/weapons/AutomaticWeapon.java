@@ -46,7 +46,7 @@ public class AutomaticWeapon extends BaseWeapon
 		this.inverseFireRate = 1f / this.fireRate;
 		
 		this.currentMagazine = this.magazine;
-		this.statusWeightTable = DamageUtils.calculateStatusWeighting(this.baseDamage);
+		this.statusWeightTable = DamageUtils.calculateStatusWeighting(this.baseDamageValues);
 	}
 	
 	@Override
@@ -111,7 +111,7 @@ public class AutomaticWeapon extends BaseWeapon
 			enemy.applyStatus(currentTime, statusToUse, critMultiplier, useHeadshots, this);
 		}
 		
-		for(Entry<StatusTypes, Float> entry : this.baseDamage.entrySet())
+		for(Entry<StatusTypes, Float> entry : this.baseDamageValues.entrySet())
 		{
 			float modifiedDamage = DamageUtils.calculateDamageAgainst(enemy, entry.getKey(), entry.getValue(), useHeadshots ? 1f : 0f);
 			modifiedDamage *= critMultiplier;

@@ -22,13 +22,23 @@ public abstract class BaseWeapon
 		this.statusDuration = 1f;
 		this.multishot = 1;
 		this.multishotModifier = 1f;
-		this.baseDamage = weapon.calculateBaseDamageTable();
+		this.baseDamageValues = weapon.calculateBaseDamageTable();
 	}
 	
 	/**
 	 * map status types with their respective base dmg value
 	 */
-	protected HashMap<StatusTypes, Float> baseDamage;
+	protected HashMap<StatusTypes, Float> baseDamageValues;
+	/**
+	 * map status types with their respective percentage increases
+	 */
+	protected HashMap<StatusTypes, Float> baseDamageMultipliers = new HashMap<StatusTypes, Float>();
+	
+	/**
+	 * percentage increase of base damage
+	 */
+	protected float baseDamageModifier;
+	
 	protected WeaponSlot weaponSlot = WeaponSlot.PRIMARY;
 	/**
 	 * 100 accuracy = pinpoint; everything lower = more spread
@@ -78,6 +88,11 @@ public abstract class BaseWeapon
 	 */
 	protected float multishotModifier = 1f;
 	
+	/**
+	 * the punchthrough in meters
+	 */
+	protected float punchthrough;
+	
 	public void applyMods(List<ParsableMod> mods)
 	{
 		//max mod capacity equals 8
@@ -88,7 +103,7 @@ public abstract class BaseWeapon
 		
 		float critChanceModifier = 0f;
 		float critDamageModifier = 0f;
-		float baseDamageModifier = 0f;
+		float damageModifier = 0f;
 		float moddedMultishotModifier = 0f;
 		float statusChanceModifier = 0f;
 		float fireRateModifier = 0f;
@@ -112,7 +127,7 @@ public abstract class BaseWeapon
 			
 			critChanceModifier += mod.getCriticalChance();
 			critDamageModifier += mod.getCriticalDamage();
-			baseDamageModifier += mod.getBaseDamage();
+			damageModifier += mod.getBaseDamage();
 			moddedMultishotModifier += mod.getMultishot();
 			statusChanceModifier += mod.getStatusChance();
 			fireRateModifier += mod.getFireRate();
@@ -129,24 +144,24 @@ public abstract class BaseWeapon
 		
 		this.criticalRate *= (1f + critChanceModifier);
 		this.criticalDamage *= (1f + critDamageModifier);
-		//TODO: implement base damage modifiers
+		this.baseDamageModifier = 1f + damageModifier;
 		this.multishotModifier += moddedMultishotModifier;
 		this.statusChance *= (1f + statusChanceModifier);
-		//TODO: fire rate doesn't scale linearly
-		this.fireRate *= (1f + fireRateModifier);
-		//TODO: apply elementals
-		//elec
-		//toxin
-		//cold
-		//heat
+		this.fireRate *= 1f + fireRateModifier;
+		
+		this.baseDamageMultipliers.put(StatusTypes.ELECTRICITY, electricityModifier);
+		this.baseDamageMultipliers.put(StatusTypes.TOXIN, toxinModifier);
+		this.baseDamageMultipliers.put(StatusTypes.COLD, coldModifier);
+		this.baseDamageMultipliers.put(StatusTypes.HEAT, heatModifier);
+		
+		this.baseDamageMultipliers.put(StatusTypes.IMPACT, impactModifier);
+		this.baseDamageMultipliers.put(StatusTypes.PUNCTURE, punctureModifier);
+		this.baseDamageMultipliers.put(StatusTypes.SLASH, slashModifier);
+		
+		this.punchthrough += punchthroughModifier;
+		
 		this.magazine *= (1f + magazineModifier);
 		this.reloadSpeed *= (1f / (1f + reloadModifier));
-		//TODO: apply ips
-		//impact
-		//puncture
-		//slash
-		//TODO: add punch through as field
-		//punch through
 	}
 	
 	public abstract void resetWeaponState();
@@ -162,6 +177,6 @@ public abstract class BaseWeapon
 	
 	public float getDamageForStatusType(StatusTypes statusType)
 	{
-		return this.baseDamage.get(statusType);
+		return this.baseDamageValues.get(statusType);
 	}
 }

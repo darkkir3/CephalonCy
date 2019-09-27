@@ -41,7 +41,7 @@ public class BuildCommand implements IBotCommand
 	@Override
 	public boolean handleCommand(MessageListener listener, MessageReceivedEvent event, String userText) 
 	{
-		String[] modsToApply = userText.split(Pattern.quote("+"));
+		String[] modsToApply = userText != null ? userText.split(Pattern.quote("+")) : null;
 		if(modsToApply == null || modsToApply.length == 0)
 		{
 			return false;
