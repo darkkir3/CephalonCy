@@ -1,9 +1,6 @@
 package me.darkkir3.cephalonCy;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -110,7 +107,7 @@ public class BuildOverviewGenerator
 		
 		for(String value : buildEffects)
 		{	
-			g2d.drawString(value, effectPosX, effectPosY);
+			BuildOverviewGenerator.formatModEffects(g2d, value, effectPosX, effectPosY);
 			effectPosY += g2d.getFontMetrics().getHeight();
 		}
 		
@@ -293,5 +290,28 @@ public class BuildOverviewGenerator
 	private static Integer getMaxCapacity(ModType buildType) 
 	{
 		return ConfigReader.readConfigI("modType." + buildType.name().toLowerCase() + ".maxCapacity");
+	}
+	
+	/**adds tabs and formats the specified effect
+	 * @param g
+	 * @param text
+	 * @param x
+	 * @param y
+	 */
+	private static void formatModEffects(Graphics2D g, String text, int x, int y)
+	{
+		if(text.startsWith("+") || text.startsWith("-"))
+		{
+			text = text.replace("+", "+\t").replace("-", "-\t");
+			for(String value : text.split("\t", 3))
+			{
+				g.drawString(value, x, y);
+				x += g.getFontMetrics().stringWidth("_") + g.getFontMetrics().getHeight();
+			}
+		}
+		else
+		{
+			g.drawString(text, x, y);
+		}
 	}
 }
