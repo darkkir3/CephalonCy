@@ -1,6 +1,9 @@
 package me.darkkir3.cephalonCy;
 
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -8,9 +11,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
+import me.darkkir3.mods.ModPolarity;
+import me.darkkir3.mods.ModType;
 import me.darkkir3.mods.ParsableMod;
 import me.darkkir3.utils.ConfigReader;
 import me.darkkir3.utils.ImageCache;
@@ -19,6 +27,7 @@ public class BuildOverviewGenerator
 {
 	private static final int marginX = 10, marginY = 10;
 	private static Font plainFont = new Font("SansSerif", Font.PLAIN, 20);
+	private static Font detailFont = new Font("SansSerif", Font.BOLD, 16);
 	private static Font boldFont = new Font("SansSerif", Font.BOLD, 20);
 	
 	public static File createOverview(ArrayList<ParsableMod> modsToDisplay)
@@ -60,6 +69,10 @@ public class BuildOverviewGenerator
         int startX = 0;
         int startY = 0;
         
+        HashMap<ParsableMod, Boolean> polarizationSuggestion = BuildOverviewGenerator.calculatePolaritySuggestion(modsToDisplay);
+        int totalCapacity = BuildOverviewGenerator.getMaxCapacity(modsToDisplay.get(0).getModType());
+        int capacityUsed = 0;
+        
         for(int i = 0; i < 8; i++)
         {
         	if(i > 0 && i % 4 == 0)
@@ -68,10 +81,39 @@ public class BuildOverviewGenerator
         		startX = 0;
         	}
         	
-        	drawModCard((modsToDisplay.size() - 1) >= i ? modsToDisplay.get(i) : null, g2d, startX, startY, cardWidth, cardHeight);
+        	ParsableMod modToDraw = (modsToDisplay.size() - 1) >= i ? modsToDisplay.get(i) : null;
+        	boolean isPolarized = false;
+        	if(modToDraw != null)
+        	{
+        		isPolarized = polarizationSuggestion.getOrDefault(modToDraw, false);
+        		capacityUsed += isPolarized ? Math.ceil(modToDraw.getTotalDrain() / 2f) : modToDraw.getTotalDrain();
+        	}
+        	
+        	drawModCard(modToDraw, isPolarized, g2d, startX, startY, cardWidth, cardHeight);
         	startX += cardOffsetX;
         }
         
+        startY += cardOffsetY + marginY;
+		startX = 0;
+		
+		drawCapacity(g2d, cardWidth, startX, startY, totalCapacity, capacityUsed);
+		
+		startY += g2d.getFontMetrics().getHeight() + 2 * marginY;
+		
+		ArrayList<String> buildEffects = modsToDisplay.get(0).mergeModEffects(modsToDisplay);
+		
+		int effectPosX = startX + marginX;
+		int effectPosY = startY;
+		
+		g2d.setFont(BuildOverviewGenerator.detailFont);
+		g2d.setColor(Color.WHITE);
+		
+		for(String value : buildEffects)
+		{	
+			g2d.drawString(value, effectPosX, effectPosY);
+			effectPosY += g2d.getFontMetrics().getHeight();
+		}
+		
 		try 
 		{
 			ImageIO.write(image, "PNG", fileToReturn);
@@ -81,11 +123,28 @@ public class BuildOverviewGenerator
 			e.printStackTrace();
 		}
 		
+		
 		fileToReturn.deleteOnExit();
 		return fileToReturn;
 	}
+
+	private static void drawCapacity(Graphics2D g2d, int cardWidth, int startX, int startY, int totalCapacity,
+			int capacityUsed) {
+		g2d.setFont(boldFont);
+		
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.drawLine(marginX + startX, g2d.getFontMetrics().getHeight() + startY - marginY, marginX + startX + cardWidth, g2d.getFontMetrics().getHeight() + startY - marginY);
+		
+        g2d.setColor(Color.WHITE);
+		String capacityString = ConfigReader.readLangFile("CAPACITY");
+		g2d.drawString(capacityString, marginX + startX, g2d.getFontMetrics().getHeight() / 2 + startY);
+		String capacityValueString = (totalCapacity - capacityUsed) + " / " + totalCapacity;
+        g2d.drawString(capacityValueString, 
+        		marginX + startX + g2d.getFontMetrics().stringWidth(capacityString) + (cardWidth / 2) - (g2d.getFontMetrics().stringWidth(capacityValueString) / 2),
+        		g2d.getFontMetrics().getHeight() / 2 + startY);
+	}
 	
-	private static void drawEmptyModCard(Graphics2D g2d, int posX, int posY, int cardWidth, int cardHeight)
+	private static void drawEmptyModCard(Graphics2D g2d, boolean isPolarized, int posX, int posY, int cardWidth, int cardHeight)
 	{
 		int cardStartX = posX + marginX;
 		int cardStartY = posY + marginY;
@@ -99,9 +158,9 @@ public class BuildOverviewGenerator
 		
 	}
 	
-	private static void drawModCard(ParsableMod mod, Graphics2D g2d, int posX, int posY, int cardWidth, int cardHeight)
+	private static void drawModCard(ParsableMod mod, boolean isPolarized, Graphics2D g2d, int posX, int posY, int cardWidth, int cardHeight)
 	{
-		drawEmptyModCard(g2d, posX, posY, cardWidth, cardHeight);
+		drawEmptyModCard(g2d, isPolarized, posX, posY, cardWidth, cardHeight);
 		
 		if(mod == null)
 		{
@@ -115,8 +174,8 @@ public class BuildOverviewGenerator
 		int markerX = posX + marginX + cardWidth - polarityIcon.getWidth();
 		int markerY = posY + (2 * marginY);
 		
-		String fusionCount = String.valueOf(mod.fusionLimit + mod.baseDrain);
-		int fusionWidth = g2d.getFontMetrics().stringWidth(fusionCount);
+		String totalDrain = String.valueOf(isPolarized ? ((int)Math.ceil(mod.getTotalDrain() / 2f)) : mod.getTotalDrain());
+		int fusionWidth = g2d.getFontMetrics().stringWidth(totalDrain);
 		markerX -= fusionWidth;
 		
 		int markerRight = posX + marginX + cardWidth;
@@ -125,18 +184,45 @@ public class BuildOverviewGenerator
 		int[] polyX = new int[] {markerX - marginX, markerX, markerRight, markerRight, markerX};
 		int[] polyY = new int[] {markerY + (polarityIcon.getHeight() / 2), markerY, markerY, markerBottom, markerBottom};
 		
-		g2d.setColor(Color.LIGHT_GRAY);
+		g2d.setColor(isPolarized ? Color.DARK_GRAY : Color.LIGHT_GRAY);
 		g2d.fillPolygon(polyX, polyY, 5);
 		
-		g2d.setColor(Color.GRAY.darker());
+		g2d.setColor(isPolarized ? Color.GRAY.brighter() : Color.GRAY.darker());
 		g2d.drawPolygon(polyX, polyY, 5);
 		
-		g2d.setColor(Color.BLACK);
-		g2d.drawString(fusionCount, markerX, markerY + (g2d.getFontMetrics().getHeight() / 2) + (polarityIcon.getHeight() / 4));
+		Color formaColor = ConfigReader.readFormaColor();
+		
+		g2d.setColor(isPolarized ? formaColor : Color.BLACK);
+		g2d.drawString(totalDrain, markerX, markerY + (g2d.getFontMetrics().getHeight() / 2) + (polarityIcon.getHeight() / 4));
 		g2d.setFont(plainFont);
 		
 		markerX += fusionWidth;
-		g2d.drawImage(polarityIcon, markerX, markerY, 20, 20, null);
+		if(isPolarized)
+		{
+			BufferedImage polarityCopy = new BufferedImage(polarityIcon.getWidth(), polarityIcon.getHeight(), BufferedImage.TRANSLUCENT);
+			Graphics2D graphicsCopy = polarityCopy.createGraphics();
+			graphicsCopy.drawImage(polarityIcon, 0, 0, null);
+			
+			 for (int i = 0; i < polarityCopy.getWidth(); i++)
+			    {
+			      for (int j = 0; j < polarityCopy.getHeight(); j++)
+			      {
+			        int ax = polarityCopy.getColorModel().getAlpha(polarityCopy.getRaster().
+			                getDataElements(i, j, null));
+			        int rx = 255, gx = 255, bx = 255;
+			        rx *= (float)formaColor.getRed() / 255f;
+			        gx *= (float)formaColor.getGreen() / 255f;
+			        bx *= (float)formaColor.getBlue() / 255f;
+			        polarityCopy.setRGB(i, j, (ax << 24) | (rx << 16) | (gx << 8) | (bx));
+			      }
+			    }
+			 g2d.drawImage(polarityCopy, markerX, markerY, 20, 20, null);
+			 graphicsCopy.dispose();
+		}
+		else
+		{
+			g2d.drawImage(polarityIcon, markerX, markerY, 20, 20, null);
+		}
 		
 		g2d.setColor(Color.GRAY);
 		
@@ -145,5 +231,67 @@ public class BuildOverviewGenerator
 				mod.name, 
 				posX + marginX + (cardWidth / 2) - (g2d.getFontMetrics().stringWidth(mod.name) / 2), 
 				posY + polarityIcon.getHeight() + (cardHeight / 2) + (g2d.getFontMetrics().getHeight() / 2));
+	}
+	
+	private static HashMap<ParsableMod, Boolean> calculatePolaritySuggestion(ArrayList<ParsableMod> modList)
+	{
+		HashMap<ParsableMod, Boolean> polarizedMap = new HashMap<ParsableMod, Boolean>();
+		
+		Optional<ParsableMod> firstNonNullMod = modList.stream().filter(T -> T != null).findFirst();
+		ModType buildType = null;
+		if(firstNonNullMod.isPresent())
+		{
+			buildType = firstNonNullMod.get().getModType();
+		}
+		
+		if(buildType != null)
+		{
+			Integer maxCapacity = getMaxCapacity(buildType);
+			if(maxCapacity > 0)
+			{
+				ArrayList<ParsableMod> modListCopy = new ArrayList<ParsableMod>(modList);
+				modListCopy.sort(new Comparator<ParsableMod>()
+						{
+							@Override
+							public int compare(ParsableMod o1, ParsableMod o2) 
+							{
+								return o2.getTotalDrain() - o1.getTotalDrain();
+							}
+						});
+				Integer availableCapacity = maxCapacity;
+				for(ParsableMod mod : modList)
+				{
+					availableCapacity -= mod.getTotalDrain();
+				}
+				
+				while(availableCapacity < 0 && modListCopy.size() > 0)
+				{
+					int i = 0;
+					ParsableMod highestDrainMod = null;
+					do
+					{
+						highestDrainMod = modListCopy.get(i++);
+					}
+					while(highestDrainMod.polarity == ModPolarity.UMBRA && i < modListCopy.size());
+					
+					//we save half of the floored value by polarizing a slot
+					availableCapacity += highestDrainMod.getTotalDrain() / 2;
+					polarizedMap.put(highestDrainMod, true);
+					modListCopy.remove(highestDrainMod);
+				}
+				
+				for(ParsableMod unpolarizedMod : modListCopy)
+				{
+					polarizedMap.put(unpolarizedMod, false);
+				}
+			}
+		}
+		
+		return polarizedMap;
+	}
+
+	private static Integer getMaxCapacity(ModType buildType) 
+	{
+		return ConfigReader.readConfigI("modType." + buildType.name().toLowerCase() + ".maxCapacity");
 	}
 }

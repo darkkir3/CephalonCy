@@ -156,7 +156,7 @@ public class ModOverviewCommand implements IBotCommand
 			{			
 				EmbedBuilder builder = new EmbedBuilder();
 				builder.setTitle(mod.name + " (" + mod.type.name().toLowerCase() + ")");
-				builder.setDescription(mod.getMaxRankDescription());
+				builder.setDescription(mod.getMaxRankDescription(1f));
 				builder.setThumbnail(mod.getImageURL());	
 				
 				String polarityName = mod.polarity.name().toLowerCase();

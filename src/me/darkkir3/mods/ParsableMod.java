@@ -1,10 +1,13 @@
 package me.darkkir3.mods;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.darkkir3.utils.ConfigReader;
+import me.darkkir3.utils.StringUtils;
 
 public class ParsableMod 
 {
@@ -23,30 +26,109 @@ public class ParsableMod
 		return "https://cdn.warframestat.us/img/" + imageName;
 	}
 	
-	public String getMaxRankDescription()
+	public String getMaxRankDescription(float umbraMultiplier)
 	{
-		StringBuilder maxRankDescription = new StringBuilder(this.description);
-		
-		float maxRankMultiplier = fusionLimit + 1;
-		    
-		//extract all decimals
-		Pattern pattern = Pattern.compile("(\\d+(?:\\.\\d+)?)");
-		Matcher matcher = pattern.matcher(maxRankDescription);
-		
-		int end = 0;
-		while (matcher.find(end)) 
+		String modifiedDescription = this.description;
+		//The description of hunter munitions only contains tags for slash instead of the actual word slash
+		if("Hunter Munitions".equals(this.name))
 		{
-			String match = matcher.group();
-			double numberFound = Double.valueOf(match);
-		    numberFound *= maxRankMultiplier;
-		    int i = (int) numberFound;
-		    
-		    maxRankDescription = maxRankDescription.replace(matcher.start(), matcher.end(), numberFound == i ? String.valueOf(i) : String.valueOf(numberFound));
-		    end = matcher.end() + 1;
-		 }
-		 
+			modifiedDescription = modifiedDescription.replace("<DT_SLASH>", "Slash");
+		}
 		
-		return maxRankDescription.toString();
+		//clear everything in brackets (aka "(x2 for heavy attacks) or (x2 for bows)"
+		String result = StringUtils.multiplyEffectNumbers(
+				//The description of hunter munitions only contains tags for slash
+				modifiedDescription
+				.replaceAll("([\\\\(<][^)]*[\\\\)>])+", ""), 
+				fusionLimit + 1);
+		if(this.polarity == ModPolarity.UMBRA)
+		{
+			 result = StringUtils.multiplyEffectNumbers(result, umbraMultiplier);
+		}
+		
+		return result;
+	}
+	
+	public ModType getModType()
+	{
+		return this.type;
+	}
+	
+	public int getTotalDrain()
+	{
+		return this.baseDrain + this.fusionLimit;
+	}
+	
+	public ArrayList<String> getModEffects(float umbraMultiplier)
+	{
+		String maxRankEffect = this.getMaxRankDescription(umbraMultiplier);
+		ArrayList<String> separateEffects = new ArrayList<String>(Arrays.asList(maxRankEffect.split(",")));
+		return separateEffects;
+	}
+	
+	/**Merge the values of all passed mods with the current instance and return every single effect as separate string
+	 * @param mods the mods to merge with
+	 * @return single mod effects
+	 */
+	public ArrayList<String> mergeModEffects(ArrayList<ParsableMod> mods)
+	{
+		int umbraModCount = (int) mods.stream().filter(T -> T.polarity == ModPolarity.UMBRA).count();
+		//umbra mod bonus increases all values by an additional 0.25 for each umbra mod (1 -> 1.25 -> 1.75 -> 2.5...)
+		float umbraMultiplier = 1f;
+		if(umbraModCount > 1)
+		{
+			int i = umbraModCount - 1;
+			float currentMultiplier = 0f;
+			while(i > 0)
+			{
+				currentMultiplier += 0.25f;
+				umbraMultiplier += currentMultiplier;
+				i--;
+			}
+		}
+		
+		ArrayList<String> effectsAvailable = new ArrayList<String>();
+		effectsAvailable.addAll(this.getModEffects(umbraMultiplier));
+		
+		for(ParsableMod mod : mods)
+		{
+			if(mod == null || mod == this)
+			{
+				continue;
+			}
+			
+			ArrayList<String> effectsToMerge = mod.getModEffects(umbraMultiplier);
+			
+			for(String value : effectsToMerge)
+			{
+				//Strip the percentage values of the effect in order to check for similar values
+				String effect = value.replaceAll("([ +-]?)\\d+(?:\\.\\d+)?%?( ?)", "");
+				boolean merged = false;
+				
+				for(int i = 0; i < effectsAvailable.size(); i++)
+				{
+					String existingEffect = effectsAvailable.get(i).replaceAll("([ +-]?)\\d+(?:\\.\\d+)?%?( ?)", "");
+					//we found an effect that seems to match the current mod
+					if(existingEffect.equalsIgnoreCase(effect))
+					{
+						ArrayList<Double> existingNumbers = StringUtils.extractNumbers(effectsAvailable.get(i));
+						if(existingNumbers != null && !existingNumbers.isEmpty())
+						{
+							String newEffect = StringUtils.adjustEffectNumbers(value, existingNumbers);
+							effectsAvailable.set(i, newEffect);
+							merged = true;
+						}
+					}
+				}
+				
+				if(!merged)
+				{
+					effectsAvailable.add(value);
+				}
+			}
+		}
+		
+		return effectsAvailable;
 	}
 	
 	public Color getRarityColor()
